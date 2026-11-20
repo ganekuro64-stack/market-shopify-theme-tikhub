@@ -1,0 +1,35 @@
+<section class="collection-page">
+  <div class="container">
+    <div class="collection-topbar">
+      <div>
+        <h1>Search Results{% if search.terms != blank %}: "{{ search.terms | escape }}"{% endif %}</h1>
+        <p style="font-size:13.5px; color:var(--text-muted); margin-top:4px;">
+          {{ search.results_count }} matching items found
+        </p>
+      </div>
+    </div>
+
+    {%- if search.performed and search.results_count > 0 -%}
+      <div class="cross-sell-grid">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {% render 'product-card', product: item %}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="empty-collection">
+        <h3 style="margin-bottom:8px;">No products found</h3>
+        <p style="color:var(--text-muted); margin-bottom:18px;">Try another keyword or browse our top departments.</p>
+        <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">Browse All Departments</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Search Results",
+  "settings": []
+}
+{% endschema %}

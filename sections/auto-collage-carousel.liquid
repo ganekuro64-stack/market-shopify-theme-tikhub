@@ -1,0 +1,83 @@
+{%- assign col = collections[section.settings.collection] -%}
+{%- if col == blank -%}
+  {%- assign col = collections['all'] -%}
+{%- endif -%}
+
+<section class="collage-section">
+  <div class="container">
+    <div class="collage-shell" data-vm-carousel>
+      <div class="section-header" style="margin-bottom: 16px;">
+        <div>
+          <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+          <h2 class="section-title" style="font-size: 28px;">{{ section.settings.heading }}</h2>
+        </div>
+        <div class="collage-controls">
+          <button type="button" class="collage-nav-btn" data-carousel-prev aria-label="Previous slide">‹</button>
+          <button type="button" class="collage-nav-btn" data-carousel-next aria-label="Next slide">›</button>
+        </div>
+      </div>
+
+      <div class="collage-viewport">
+        <div class="collage-track">
+          {%- for product in col.products limit: section.settings.limit -%}
+            {%- assign first_var = product.selected_or_first_available_variant -%}
+            {%- assign save_pct = 0 -%}
+            {%- if product.compare_at_price > product.price -%}
+              {%- assign diff = product.compare_at_price | minus: product.price -%}
+              {%- assign save_pct = diff | times: 100 | divided_by: product.compare_at_price -%}
+            {%- endif -%}
+
+            <article class="collage-slide">
+              <a class="collage-media" href="{{ product.url }}">
+                {%- if save_pct > 0 -%}
+                  <span class="collage-save">-{{ save_pct }}%</span>
+                {%- endif -%}
+                {%- if product.featured_image != blank -%}
+                  <img src="{{ product.featured_image | image_url: width: 520 }}" alt="{{ product.title | escape }}" loading="lazy" draggable="false" />
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag }}
+                {%- endif -%}
+              </a>
+              <div class="collage-body">
+                <span class="collage-dept-label">{{ product.type | default: 'Trending' }}</span>
+                <h4><a href="{{ product.url }}">{{ product.title }}</a></h4>
+                <div class="cross-rating" style="margin-bottom:6px;">
+                  <span class="stars">★★★★★</span>
+                  <strong>4.8</strong>
+                </div>
+                <div class="collage-foot">
+                  <div class="collage-price">
+                    <strong>{{ product.price | money }}</strong>
+                    {%- if product.compare_at_price > product.price -%}
+                      <s>{{ product.compare_at_price | money }}</s>
+                    {%- endif -%}
+                  </div>
+                  {%- if first_var.available -%}
+                    <button type="button" class="collage-mini-add" onclick="vmAddToCart({{ first_var.id }}, 1)">
+                      + Add
+                    </button>
+                  {%- endif -%}
+                </div>
+              </div>
+            </article>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="collage-dots" aria-label="Carousel pagination"></div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Auto Collage Carousel",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Curated Highlights · Auto-Sliding" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Trending Across All Departments" },
+    { "type": "collection", "id": "collection", "label": "Source Collection" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 4, "max": 16, "step": 4, "default": 12 }
+  ],
+  "presets": [{ "name": "Auto Collage Carousel" }]
+}
+{% endschema %}

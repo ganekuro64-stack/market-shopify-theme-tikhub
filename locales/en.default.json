@@ -1,0 +1,30 @@
+{
+  "general": {
+    "search": {
+      "placeholder": "Search kitchen, security, auto tech, outdoor gear...",
+      "submit": "Search",
+      "no_results": "No matching products found."
+    },
+    "cart": {
+      "title": "Your Bag",
+      "empty": "Your bag is currently empty.",
+      "checkout": "Proceed to Checkout",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "free": "Free",
+      "savings": "Savings"
+    }
+  },
+  "products": {
+    "add_to_cart": "Add to Cart",
+    "quick_add": "+ Add to Bag",
+    "sold_out": "Sold Out",
+    "save": "SAVE"
+  },
+  "collections": {
+    "filters": "Filters",
+    "sort_by": "Sort by",
+    "clear_all": "Clear all",
+    "no_products": "No products match these filters."
+  }
+}

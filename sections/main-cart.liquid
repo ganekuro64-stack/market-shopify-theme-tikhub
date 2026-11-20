@@ -1,0 +1,45 @@
+<section class="collection-page">
+  <div class="container" style="max-width: 860px;">
+    <h1 style="margin-bottom: 24px;">Your Shopping Bag</h1>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post">
+        {%- for item in cart.items -%}
+          <div class="cart-item">
+            {%- if item.image -%}
+              <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.product.title | escape }}" />
+            {%- endif -%}
+            <div class="cart-item-info">
+              <div class="cart-item-top">
+                <a href="{{ item.url }}">{{ item.product.title }}</a>
+                <span>{{ item.final_line_price | money }}</span>
+              </div>
+              <div class="cart-item-variant">{{ item.variant.title }}</div>
+              <div class="cart-item-bottom">
+                <span>Qty: {{ item.quantity }}</span>
+                <a href="{{ item.url_to_remove }}" style="font-size:12.5px; color:var(--text-subtle); text-decoration:underline;">Remove</a>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+
+        <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+          <strong style="font-size:20px;">Subtotal: {{ cart.total_price | money }}</strong>
+          <button type="submit" name="checkout" class="btn btn-primary">Proceed to Checkout →</button>
+        </div>
+      </form>
+    {%- else -%}
+      <div class="empty-collection">
+        <h3 style="margin-bottom:8px;">Your bag is empty</h3>
+        <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">Continue Shopping</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart Page",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,50 @@
+{
+  "sections": {
+    "hero": {
+      "type": "marketplace-hero",
+      "settings": {}
+    },
+    "categories": {
+      "type": "shop-by-category",
+      "blocks": {
+        "cat_1": { "type": "category", "settings": { "title": "Home & Appliances", "subtitle": "Cleaners & storage", "preset_icon": "cat-home.jpg" } },
+        "cat_2": { "type": "category", "settings": { "title": "Smart Security", "subtitle": "Solar cam & doorbell", "preset_icon": "cat-security.jpg" } },
+        "cat_3": { "type": "category", "settings": { "title": "Auto Electronics", "subtitle": "4K dual dash cams", "preset_icon": "cat-auto.jpg" } },
+        "cat_4": { "type": "category", "settings": { "title": "Outdoor & Tactical", "subtitle": "Rugged essentials", "preset_icon": "cat-outdoor.jpg" } },
+        "cat_5": { "type": "category", "settings": { "title": "Fitness & Wellness", "subtitle": "Home trainers", "preset_icon": "cat-fitness.jpg" } },
+        "cat_6": { "type": "category", "settings": { "title": "Flash Deals", "subtitle": "Up to 50% Off", "preset_icon": "cat-deals.jpg" } }
+      },
+      "block_order": ["cat_1", "cat_2", "cat_3", "cat_4", "cat_5", "cat_6"],
+      "settings": {}
+    },
+    "carousel": {
+      "type": "auto-collage-carousel",
+      "settings": {}
+    },
+    "promo_duo": {
+      "type": "promo-duo-banners",
+      "settings": {}
+    },
+    "deals": {
+      "type": "featured-deals",
+      "settings": {}
+    },
+    "campaign": {
+      "type": "campaign-banner",
+      "settings": {}
+    },
+    "trust": {
+      "type": "trust-strip",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "categories",
+    "carousel",
+    "promo_duo",
+    "deals",
+    "campaign",
+    "trust"
+  ]
+}

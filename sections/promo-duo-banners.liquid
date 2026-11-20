@@ -1,0 +1,68 @@
+<section style="padding: 4px 0 44px;">
+  <div class="container">
+    <div class="promo-duo-grid">
+      <a class="promo-duo-card navy" href="{{ section.settings.left_url | default: routes.all_products_collection_url }}">
+        <div class="promo-duo-text">
+          <span class="mp-side-tag" style="background:rgba(255,255,255,0.16); color:#FFF;">{{ section.settings.left_badge }}</span>
+          <h3>{{ section.settings.left_title }}</h3>
+          <p>{{ section.settings.left_sub }}</p>
+          <span style="font-size:13.5px; font-weight:600; color:#93C5FD;">{{ section.settings.left_cta }}</span>
+        </div>
+        <div class="promo-duo-visuals">
+          {%- if section.settings.left_img_1 != blank -%}
+            <img src="{{ section.settings.left_img_1 | image_url: width: 240 }}" alt="{{ section.settings.left_title | escape }}" />
+          {%- else -%}
+            <img src="{{ 'cat-security.jpg' | asset_url }}" alt="Security" />
+          {%- endif -%}
+          {%- if section.settings.left_img_2 != blank -%}
+            <img src="{{ section.settings.left_img_2 | image_url: width: 240 }}" alt="{{ section.settings.left_title | escape }}" />
+          {%- endif -%}
+        </div>
+      </a>
+
+      <a class="promo-duo-card light-blue" href="{{ section.settings.right_url | default: routes.all_products_collection_url }}">
+        <div class="promo-duo-text">
+          <span class="mp-side-tag" style="background:var(--bg-accent-soft); color:var(--accent);">{{ section.settings.right_badge }}</span>
+          <h3>{{ section.settings.right_title }}</h3>
+          <p>{{ section.settings.right_sub }}</p>
+          <span style="font-size:13.5px; font-weight:600; color:var(--accent);">{{ section.settings.right_cta }}</span>
+        </div>
+        <div class="promo-duo-visuals">
+          {%- if section.settings.right_img_1 != blank -%}
+            <img src="{{ section.settings.right_img_1 | image_url: width: 240 }}" alt="{{ section.settings.right_title | escape }}" />
+          {%- else -%}
+            <img src="{{ 'cat-home.jpg' | asset_url }}" alt="Home" />
+          {%- endif -%}
+          {%- if section.settings.right_img_2 != blank -%}
+            <img src="{{ section.settings.right_img_2 | image_url: width: 240 }}" alt="{{ section.settings.right_title | escape }}" />
+          {%- endif -%}
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Promo Duo Banners",
+  "settings": [
+    { "type": "header", "content": "Left Banner (Navy)" },
+    { "type": "text", "id": "left_badge", "label": "Badge", "default": "Zero Monthly Fees" },
+    { "type": "text", "id": "left_title", "label": "Heading", "default": "Upgrade Your Home Security" },
+    { "type": "text", "id": "left_sub", "label": "Subtitle", "default": "Solar-powered 4G cameras & private screen doorbells ready in minutes." },
+    { "type": "text", "id": "left_cta", "label": "Link Text", "default": "Shop Smart Security →" },
+    { "type": "url", "id": "left_url", "label": "Link URL" },
+    { "type": "image_picker", "id": "left_img_1", "label": "Image 1" },
+    { "type": "image_picker", "id": "left_img_2", "label": "Image 2" },
+    { "type": "header", "content": "Right Banner (Light Blue)" },
+    { "type": "text", "id": "right_badge", "label": "Badge", "default": "Up to 50% Off" },
+    { "type": "text", "id": "right_title", "label": "Heading", "default": "Deep Clean & Smart Organization" },
+    { "type": "text", "id": "right_sub", "label": "Subtitle", "default": "212°F multi-purpose steam cleaners and magnetic drop-front shoe towers." },
+    { "type": "text", "id": "right_cta", "label": "Link Text", "default": "Shop Home & Appliances →" },
+    { "type": "url", "id": "right_url", "label": "Link URL" },
+    { "type": "image_picker", "id": "right_img_1", "label": "Image 1" },
+    { "type": "image_picker", "id": "right_img_2", "label": "Image 2" }
+  ],
+  "presets": [{ "name": "Promo Duo Banners" }]
+}
+{% endschema %}

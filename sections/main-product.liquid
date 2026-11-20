@@ -1,0 +1,327 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign save_amount = current_variant.compare_at_price | minus: current_variant.price -%}
+
+<div id="view-pdp">
+  <section class="pdp-section">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="{{ routes.root_url }}">Home</a>
+        <span>/</span>
+        {%- if collection != blank -%}
+          <a href="{{ collection.url }}">{{ collection.title }}</a>
+          <span>/</span>
+        {%- endif -%}
+        <strong style="color: var(--text);">{{ product.title }}</strong>
+      </div>
+
+      <div class="pdp-grid">
+        <!-- LEFT: GALLERY + TRUST -->
+        <div class="pdp-gallery">
+          <div class="pdp-main-img">
+            {%- if product.featured_image != blank -%}
+              <img id="pdp-main-img" src="{{ product.featured_image | image_url: width: 1000 }}" alt="{{ product.title | escape }}" />
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag }}
+            {%- endif -%}
+          </div>
+
+          {%- if product.images.size > 1 -%}
+            <div class="pdp-thumbs">
+              {%- for image in product.images limit: 6 -%}
+                <button
+                  type="button"
+                  class="pdp-thumb{% if forloop.first %} active{% endif %}"
+                  onclick="setPdpImage('{{ image | image_url: width: 1000 }}', this)"
+                >
+                  <img src="{{ image | image_url: width: 240 }}" alt="{{ image.alt | default: product.title | escape }}" />
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <div class="trust-pills">
+            <div class="trust-pill">
+              <strong>Free 2-Day</strong>
+              Orders over ${{ settings.free_shipping_threshold | default: 75 }}
+            </div>
+            <div class="trust-pill">
+              <strong>2-Year Warranty</strong>
+              Full replacement
+            </div>
+            <div class="trust-pill">
+              <strong>60-Day Trial</strong>
+              Risk-free returns
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: HIGH-CONVERTING BUY BOX -->
+        <div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:13.5px;">
+            <span class="stars">★★★★★</span>
+            <strong>4.9</strong>
+            <span style="color: var(--text-muted);">(Verified Customer Rating)</span>
+          </div>
+
+          <h1 class="buy-box-title">{{ product.title }}</h1>
+
+          {%- if section.settings.show_delivery_box -%}
+            <div class="delivery-estimate-box">
+              <span class="delivery-estimate-icon">
+                <img src="{{ 'trust-shipping.jpg' | asset_url }}" alt="Express Delivery" />
+              </span>
+              <div>
+                <strong>In Stock · Ready to Ship</strong> — {{ section.settings.delivery_text }}
+              </div>
+            </div>
+          {%- endif -%}
+
+          <div class="pdp-price-bar">
+            <span class="pdp-price-now" id="pdp-price-now">{{ current_variant.price | money }}</span>
+            {%- if current_variant.compare_at_price > current_variant.price -%}
+              <span class="pdp-price-compare" id="pdp-price-compare">{{ current_variant.compare_at_price | money }}</span>
+              <span class="pdp-save-pill" id="pdp-save-pill">Save {{ save_amount | money }}</span>
+            {%- endif -%}
+          </div>
+
+          <!-- REAL SHOPIFY VARIANT SELECTOR -->
+          {%- unless product.has_only_default_variant -%}
+            <div class="vm-variant-group">
+              <label class="vm-variant-label" for="vm-variant-select">Select Option</label>
+              <select
+                id="vm-variant-select"
+                class="collection-sort-select"
+                style="width:100%; padding:12px 14px;"
+                onchange="vmOnVariantChange(this)"
+              >
+                {%- for variant in product.variants -%}
+                  <option
+                    value="{{ variant.id }}"
+                    data-price="{{ variant.price }}"
+                    data-compare="{{ variant.compare_at_price | default: 0 }}"
+                    data-image="{% if variant.featured_image %}{{ variant.featured_image | image_url: width: 1000 }}{% endif %}"
+                    {% if variant.id == current_variant.id %}selected{% endif %}
+                    {% unless variant.available %}disabled{% endunless %}
+                  >
+                    {{ variant.title }} — {{ variant.price | money }}{% unless variant.available %} (Sold Out){% endunless %}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- else -%}
+            <input type="hidden" id="vm-variant-select" value="{{ current_variant.id }}" />
+          {%- endunless -%}
+
+          <!-- QUANTITY BUNDLE SELECTOR -->
+          <div class="tier-label">
+            <span>Select Quantity</span>
+            <span style="color: var(--success);">Fast Express Dispatch</span>
+          </div>
+
+          <div class="tier-options" id="pdp-tier-options">
+            <button type="button" class="tier-card selected" data-qty="1" onclick="vmSelectPdpQty(1, this)">
+              <div class="tier-left">
+                <span class="tier-radio"></span>
+                <div>
+                  <div class="tier-title">Single Unit (1×)</div>
+                  <div class="tier-sub">Standard retail package</div>
+                </div>
+              </div>
+              <div class="tier-prices">
+                <strong>{{ current_variant.price | money }}</strong>
+              </div>
+            </button>
+
+            <button type="button" class="tier-card" data-qty="2" onclick="vmSelectPdpQty(2, this)">
+              <div class="tier-left">
+                <span class="tier-radio"></span>
+                <div>
+                  <div class="tier-title">2-Pack Bundle <span class="tier-badge">Most Popular</span></div>
+                  <div class="tier-sub">2 units · Qualifies for Express Shipping</div>
+                </div>
+              </div>
+              <div class="tier-prices">
+                <strong>{{ current_variant.price | times: 2 | money }}</strong>
+              </div>
+            </button>
+
+            <button type="button" class="tier-card" data-qty="3" onclick="vmSelectPdpQty(3, this)">
+              <div class="tier-left">
+                <span class="tier-radio"></span>
+                <div>
+                  <div class="tier-title">3-Pack Value Set <span class="tier-badge">Best Value</span></div>
+                  <div class="tier-sub">3 units · Priority Express Fulfillment</div>
+                </div>
+              </div>
+              <div class="tier-prices">
+                <strong>{{ current_variant.price | times: 3 | money }}</strong>
+              </div>
+            </button>
+          </div>
+
+          {%- if current_variant.available -%}
+            <button
+              type="button"
+              class="btn btn-primary btn-full"
+              id="pdp-atc-btn"
+              onclick="vmSubmitPdpCart()"
+              style="padding: 16px 24px; font-size: 15.5px;"
+            >
+              Add to Cart — {{ current_variant.price | money }}
+            </button>
+          {%- else -%}
+            <button type="button" class="btn btn-secondary btn-full" disabled style="padding: 16px 24px;">
+              Sold Out
+            </button>
+          {%- endif -%}
+
+          <div class="payment-row">
+            <span class="pay-chip">Shop Pay</span>
+            <span class="pay-chip">Apple Pay</span>
+            <span class="pay-chip">Google Pay</span>
+            <span class="pay-chip">Visa</span>
+            <span class="pay-chip">Mastercard</span>
+            <span class="pay-chip">PayPal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RICH 4-TAB PRODUCT DESCRIPTION -->
+  <section class="pdp-desc-section" id="pdp-description">
+    <div class="container">
+      <div class="pdp-desc-card">
+        <div class="pdp-desc-tabs" role="tablist">
+          <button type="button" class="pdp-desc-tab active" data-desc-tab="overview" onclick="setDescTab('overview')">Product Overview</button>
+          <button type="button" class="pdp-desc-tab" data-desc-tab="specs" onclick="setDescTab('specs')">Specifications</button>
+          <button type="button" class="pdp-desc-tab" data-desc-tab="box" onclick="setDescTab('box')">What’s in the Box</button>
+          <button type="button" class="pdp-desc-tab" data-desc-tab="shipping" onclick="setDescTab('shipping')">Shipping &amp; Warranty</button>
+        </div>
+
+        <div class="pdp-desc-body">
+          <div class="pdp-desc-panel active" id="desc-panel-overview">
+            <div class="desc-overview-grid">
+              <div class="desc-overview-copy">
+                <span class="eyebrow" style="margin-bottom:8px;">About This Item</span>
+                <h3>{{ product.title }}</h3>
+                <div class="rte" style="font-size:15px; color:var(--text-muted); line-height:1.7;">
+                  {{ product.description }}
+                </div>
+                <div class="desc-feature-pills">
+                  <div class="desc-feature-pill">
+                    <strong>Verified Quality</strong>
+                    <span>Individually inspected for durability before dispatch.</span>
+                  </div>
+                  <div class="desc-feature-pill">
+                    <strong>Ready in Minutes</strong>
+                    <span>Intuitive out-of-the-box setup with zero complex tools.</span>
+                  </div>
+                  <div class="desc-feature-pill">
+                    <strong>2-Year Protection</strong>
+                    <span>Covered against defects with responsive support.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="desc-visual-box">
+                {%- assign secondary_img = product.images[1] | default: product.featured_image -%}
+                {%- if secondary_img != blank -%}
+                  <img src="{{ secondary_img | image_url: width: 800 }}" alt="{{ product.title | escape }}" />
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+
+          <div class="pdp-desc-panel" id="desc-panel-specs">
+            <table class="specs-table">
+              <tr><th>Product Name</th><td>{{ product.title }}</td></tr>
+              <tr><th>Department</th><td>{{ product.type | default: 'General Merchandise' }}</td></tr>
+              <tr><th>Brand / Vendor</th><td>{{ product.vendor }}</td></tr>
+              <tr><th>SKU</th><td>{{ current_variant.sku | default: current_variant.id }}</td></tr>
+              <tr><th>Warranty &amp; Returns</th><td>2-Year Replacement Warranty · 60-Day Easy Returns</td></tr>
+            </table>
+          </div>
+
+          <div class="pdp-desc-panel" id="desc-panel-box">
+            <ul class="box-checklist">
+              <li><span>✓</span> 1× {{ product.title }}</li>
+              <li><span>✓</span> Complete Standard Accessory Kit</li>
+              <li><span>✓</span> Quick-Start &amp; Care Manual</li>
+              <li><span>✓</span> 2-Year Quality Warranty Protection</li>
+            </ul>
+          </div>
+
+          <div class="pdp-desc-panel" id="desc-panel-shipping">
+            <div class="desc-feature-pills" style="margin-top:0;">
+              <div class="desc-feature-pill">
+                <strong>Same-Day Dispatch</strong>
+                <span>Orders placed before 2 PM EST are quality-checked and packed the same business day.</span>
+              </div>
+              <div class="desc-feature-pill">
+                <strong>Free 2-Day Express (${{ settings.free_shipping_threshold | default: 75 }}+)</strong>
+                <span>Full carrier tracking straight to your doorstep.</span>
+              </div>
+              <div class="desc-feature-pill">
+                <strong>60-Day Trial &amp; 2-Year Warranty</strong>
+                <span>Not 100% satisfied? Return within 60 days for a full refund—no restocking fees.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- STICKY BOTTOM ATC BAR -->
+<div class="sticky-atc" id="sticky-atc">
+  <div class="sticky-atc-inner">
+    <div class="sticky-atc-product">
+      {%- if product.featured_image != blank -%}
+        <img src="{{ product.featured_image | image_url: width: 120 }}" alt="{{ product.title | escape }}" style="object-fit:contain; background:#FFF; padding:3px;" />
+      {%- endif -%}
+      <div>
+        <strong style="display:block; font-size:14.5px;">{{ product.title | truncate: 44 }}</strong>
+        <span style="font-size:12.5px; color:var(--text-muted);">{{ current_variant.price | money }}</span>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="vmSubmitPdpCart()">
+      Add to Cart
+    </button>
+  </div>
+</div>
+
+<script>
+  window._vmPdpQty = 1;
+  window.vmSelectPdpQty = function (qty, btn) {
+    window._vmPdpQty = qty;
+    document.querySelectorAll('#pdp-tier-options .tier-card').forEach(c => c.classList.remove('selected'));
+    if (btn) btn.classList.add('selected');
+  };
+  window.vmOnVariantChange = function (selectEl) {
+    const opt = selectEl.options[selectEl.selectedIndex];
+    if (!opt) return;
+    const priceCents = Number(opt.dataset.price || 0);
+    const imgUrl = opt.dataset.image;
+    const priceEl = document.getElementById('pdp-price-now');
+    const atcEl = document.getElementById('pdp-atc-btn');
+    if (priceEl) priceEl.textContent = '$' + (priceCents / 100).toFixed(2);
+    if (atcEl) atcEl.textContent = 'Add to Cart — $' + (priceCents / 100).toFixed(2);
+    if (imgUrl) setPdpImage(imgUrl);
+  };
+  window.vmSubmitPdpCart = function () {
+    const varEl = document.getElementById('vm-variant-select');
+    const varId = varEl ? varEl.value : {{ current_variant.id }};
+    vmAddToCart(varId, window._vmPdpQty || 1);
+  };
+</script>
+
+{% schema %}
+{
+  "name": "Product Page (PDP)",
+  "settings": [
+    { "type": "checkbox", "id": "show_delivery_box", "label": "Show Estimated Delivery Box", "default": true },
+    { "type": "text", "id": "delivery_text", "label": "Delivery Estimate Text", "default": "Order within 3 hrs for fast tracked express delivery." }
+  ]
+}
+{% endschema %}

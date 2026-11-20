@@ -1,0 +1,86 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Vera Market",
+    "theme_version": "1.0.0",
+    "theme_author": "Vera Market Studio",
+    "theme_documentation_url": "https://help.shopify.com/en/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com"
+  },
+  {
+    "name": "Brand & Colors",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "text",
+        "id": "brand_primary_name",
+        "label": "Brand Name (Part 1)",
+        "default": "VERA"
+      },
+      {
+        "type": "text",
+        "id": "brand_accent_name",
+        "label": "Brand Name (Part 2 - Accent)",
+        "default": "MARKET"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Primary Retail Accent",
+        "default": "#0B4F9E"
+      },
+      {
+        "type": "color",
+        "id": "color_navy",
+        "label": "Deep Navy (Announcement & Banners)",
+        "default": "#0B2545"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "Page Canvas Background",
+        "default": "#F6F7F9"
+      },
+      {
+        "type": "color",
+        "id": "color_badge",
+        "label": "Deal / Save Badge Color",
+        "default": "#D92D20"
+      }
+    ]
+  },
+  {
+    "name": "Cart & Shipping",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free 2-Day Shipping Threshold (USD)",
+        "default": 75
+      },
+      {
+        "type": "collection",
+        "id": "cart_upsell_collection",
+        "label": "Cart Drawer Upsell Collection (Frequently Bought Together)"
+      }
+    ]
+  },
+  {
+    "name": "Tracking & Pixels",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Recommended: Connect Meta Pixel + CAPI via the official 'Facebook & Instagram' app and GA4 / Google Ads via 'Google & YouTube' app, or use Settings > Customer Events. Use this optional field only for additional verification meta tags."
+      },
+      {
+        "type": "textarea",
+        "id": "head_verification_tags",
+        "label": "Domain Verification Meta Tags (Meta / Google Search Console)"
+      }
+    ]
+  }
+]

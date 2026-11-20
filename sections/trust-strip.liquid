@@ -1,0 +1,62 @@
+<section style="padding: 8px 0 64px;">
+  <div class="container">
+    <div class="trust-strip-grid">
+      <div class="trust-strip-card">
+        <span class="trust-strip-icon">
+          <img src="{{ 'trust-shipping.jpg' | asset_url }}" alt="Free 2-Day Shipping" />
+        </span>
+        <div>
+          <strong>{{ section.settings.t1_title }}</strong>
+          <p>{{ section.settings.t1_desc }}</p>
+        </div>
+      </div>
+
+      <div class="trust-strip-card">
+        <span class="trust-strip-icon">
+          <img src="{{ 'trust-returns.jpg' | asset_url }}" alt="60-Day Easy Returns" />
+        </span>
+        <div>
+          <strong>{{ section.settings.t2_title }}</strong>
+          <p>{{ section.settings.t2_desc }}</p>
+        </div>
+      </div>
+
+      <div class="trust-strip-card">
+        <span class="trust-strip-icon">
+          <img src="{{ 'trust-warranty.jpg' | asset_url }}" alt="2-Year Quality Warranty" />
+        </span>
+        <div>
+          <strong>{{ section.settings.t3_title }}</strong>
+          <p>{{ section.settings.t3_desc }}</p>
+        </div>
+      </div>
+
+      <div class="trust-strip-card">
+        <span class="trust-strip-icon">
+          <img src="{{ 'trust-secure.jpg' | asset_url }}" alt="Protected Checkout" />
+        </span>
+        <div>
+          <strong>{{ section.settings.t4_title }}</strong>
+          <p>{{ section.settings.t4_desc }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Marketplace Trust Strip",
+  "settings": [
+    { "type": "text", "id": "t1_title", "label": "Item 1 Title", "default": "Free 2-Day Shipping" },
+    { "type": "text", "id": "t1_desc", "label": "Item 1 Text", "default": "Complimentary express delivery on all orders over $75 with live tracking." },
+    { "type": "text", "id": "t2_title", "label": "Item 2 Title", "default": "60-Day Easy Returns" },
+    { "type": "text", "id": "t2_desc", "label": "Item 2 Text", "default": "Try any product at home. Prepaid return labels with zero restocking fees." },
+    { "type": "text", "id": "t3_title", "label": "Item 3 Title", "default": "2-Year Quality Warranty" },
+    { "type": "text", "id": "t3_desc", "label": "Item 3 Text", "default": "Every appliance, camera, and gear item is tested and backed by replacement." },
+    { "type": "text", "id": "t4_title", "label": "Item 4 Title", "default": "Protected Checkout" },
+    { "type": "text", "id": "t4_desc", "label": "Item 4 Text", "default": "256-bit SSL encryption with Shop Pay, Apple Pay, PayPal & major cards." }
+  ],
+  "presets": [{ "name": "Marketplace Trust Strip" }]
+}
+{% endschema %}

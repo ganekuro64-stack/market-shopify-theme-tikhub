@@ -1,0 +1,74 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div style="font-size: 19px; font-weight: 800; letter-spacing:-0.02em; margin-bottom: 10px;">
+          {{ settings.brand_primary_name | default: shop.name }}<span style="color:var(--accent);">{{ settings.brand_accent_name }}</span>
+        </div>
+        <p style="font-size: 13.5px; color: var(--text-muted); max-width: 280px;">
+          {{ section.settings.about_text }}
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h5>{{ section.settings.col_1_title }}</h5>
+        <ul>
+          {%- if section.settings.menu_1 != blank -%}
+            {%- for link in linklists[section.settings.menu_1].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            <li><a href="{{ routes.all_products_collection_url }}">All Departments</a></li>
+            {%- for col in collections limit: 4 -%}
+              <li><a href="{{ col.url }}">{{ col.title }}</a></li>
+            {%- endfor -%}
+          {%- endif -%}
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>{{ section.settings.col_2_title }}</h5>
+        <ul>
+          {%- if section.settings.menu_2 != blank -%}
+            {%- for link in linklists[section.settings.menu_2].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            <li><a href="/policies/shipping-policy">Shipping Policy</a></li>
+            <li><a href="/policies/refund-policy">60-Day Returns</a></li>
+            <li><a href="/policies/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/policies/terms-of-service">Terms of Service</a></li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Contact &amp; Support</h5>
+        <ul>
+          <li>{{ section.settings.support_email }}</li>
+          <li>{{ section.settings.support_hours }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+      <span>Secure Checkout · 60-Day Easy Returns</span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "textarea", "id": "about_text", "label": "About store", "default": "Your curated everyday marketplace for smart security, auto tech, home appliances, and outdoor gear." },
+    { "type": "text", "id": "col_1_title", "label": "Column 1 Title", "default": "Departments" },
+    { "type": "link_list", "id": "menu_1", "label": "Column 1 Menu" },
+    { "type": "text", "id": "col_2_title", "label": "Column 2 Title", "default": "Customer Care" },
+    { "type": "link_list", "id": "menu_2", "label": "Column 2 Menu", "default": "footer" },
+    { "type": "text", "id": "support_email", "label": "Support Email", "default": "support@veramarket.com" },
+    { "type": "text", "id": "support_hours", "label": "Support Hours", "default": "24/7 Customer Support" }
+  ]
+}
+{% endschema %}

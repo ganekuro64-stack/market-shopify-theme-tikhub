@@ -1,0 +1,72 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand-logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}" style="font-family: 'Inter', sans-serif; font-size: 21px; font-weight: 800; letter-spacing: -0.03em;">
+      {%- if settings.logo != blank -%}
+        <img src="{{ settings.logo | image_url: height: 72 }}" alt="{{ shop.name }}" style="height:34px; width:auto;" />
+      {%- else -%}
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; background:var(--accent); color:var(--accent-text); font-size:15px; margin-right:6px;">
+          {{ settings.brand_primary_name | default: shop.name | slice: 0 }}
+        </span>
+        {{ settings.brand_primary_name | default: shop.name }}<span style="color:var(--accent); font-weight:600; margin-left:2px;">{{ settings.brand_accent_name }}</span>
+      {%- endif -%}
+    </a>
+
+    <div class="header-search-wrap">
+      <form class="header-search-box" action="{{ routes.search_url }}" method="get" role="search">
+        <input
+          type="search"
+          name="q"
+          id="header-search-input"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ section.settings.search_placeholder | escape }}"
+          autocomplete="off"
+        />
+        <input type="hidden" name="type" value="product" />
+        <button type="submit" class="header-search-btn">Search</button>
+      </form>
+      <div class="search-dropdown" id="search-dropdown"></div>
+    </div>
+
+    <div class="header-actions">
+      {%- if section.settings.deals_link != blank -%}
+        <a class="nav-links" style="font-size:13.5px;" href="{{ section.settings.deals_link }}">{{ section.settings.deals_label }}</a>
+      {%- endif -%}
+      <button type="button" class="cart-trigger" onclick="openCart()" aria-label="Open Cart">
+        <span>Bag</span>
+        <span class="cart-count" id="header-cart-count">{{ cart.item_count }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="dept-bar">
+    <div class="container dept-bar-inner">
+      <a class="dept-pill active" href="{{ routes.all_products_collection_url }}">☰ All Departments</a>
+      {%- if section.settings.menu != blank -%}
+        {%- for link in linklists[section.settings.menu].links -%}
+          <a class="dept-pill{% if link.active %} active{% endif %}" href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for col in collections limit: 6 -%}
+          {%- unless col.handle == 'all' -%}
+            <a class="dept-pill" href="{{ col.url }}">{{ col.title }}</a>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {%- if section.settings.deals_link != blank -%}
+        <a class="dept-pill deal-pill" href="{{ section.settings.deals_link }}">★ {{ section.settings.deals_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Marketplace Header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Department Navigation Menu", "default": "main-menu" },
+    { "type": "text", "id": "search_placeholder", "label": "Search placeholder", "default": "Search kitchen, security, auto tech, outdoor gear..." },
+    { "type": "text", "id": "deals_label", "label": "Deals Link Label", "default": "Today's Deals" },
+    { "type": "url", "id": "deals_link", "label": "Deals Link URL" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,70 @@
+{%- comment -%}
+  Unified Branded Marketplace Product Card
+  Usage: {% render 'product-card', product: product %}
+{%- endcomment -%}
+
+{%- assign first_variant = product.selected_or_first_available_variant -%}
+{%- assign save_pct = 0 -%}
+{%- if product.compare_at_price > product.price -%}
+  {%- assign diff = product.compare_at_price | minus: product.price -%}
+  {%- assign save_pct = diff | times: 100 | divided_by: product.compare_at_price -%}
+{%- endif -%}
+
+<article class="cross-card">
+  <a class="cross-card-media" href="{{ product.url }}">
+    {%- if save_pct > 0 -%}
+      <span class="cross-save-badge">SAVE {{ save_pct }}%</span>
+    {%- endif -%}
+    {%- if product.featured_image != blank -%}
+      <img
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        loading="lazy"
+        width="600"
+        height="600"
+      />
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag }}
+    {%- endif -%}
+  </a>
+
+  <div class="cross-card-body">
+    <span class="cross-cat">{{ product.type | default: product.vendor | default: 'Featured' }}</span>
+    <a class="cross-title" href="{{ product.url }}">{{ product.title }}</a>
+
+    <div class="cross-rating">
+      <span class="stars">★★★★★</span>
+      <strong>4.8</strong>
+    </div>
+
+    <div class="cross-price-row">
+      <span class="cross-price-now">{{ product.price | money }}</span>
+      {%- if product.compare_at_price > product.price -%}
+        <span class="cross-price-old">{{ product.compare_at_price | money }}</span>
+      {%- endif -%}
+    </div>
+
+    <div class="cross-delivery">
+      {%- assign threshold_cents = settings.free_shipping_threshold | default: 75 | times: 100 -%}
+      {%- if product.price >= threshold_cents -%}
+        ✓ Free 2-Day Delivery
+      {%- else -%}
+        ✓ Ships in 24h
+      {%- endif -%}
+    </div>
+
+    {%- if first_variant.available -%}
+      <button
+        type="button"
+        class="cross-quick-add"
+        onclick="vmAddToCart({{ first_variant.id }}, 1)"
+      >
+        + Add to Bag
+      </button>
+    {%- else -%}
+      <button type="button" class="cross-quick-add" disabled style="opacity:0.5; cursor:not-allowed;">
+        Sold Out
+      </button>
+    {%- endif -%}
+  </div>
+</article>

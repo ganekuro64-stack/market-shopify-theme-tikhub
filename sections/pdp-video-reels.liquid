@@ -1,0 +1,164 @@
+<section class="pdp-videos-section" id="pdp-videos">
+  <div class="container">
+    <div class="section-header" style="margin-bottom: 22px;">
+      <div>
+        <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+        <h2 class="section-title" style="font-size: 30px;">{{ section.settings.heading }}</h2>
+      </div>
+      <p style="font-size:14px; color:var(--text-muted); max-width:380px;">
+        {{ section.settings.subtext }}
+      </p>
+    </div>
+
+    <div class="video-reels-grid">
+      {%- for block in section.blocks -%}
+        {%- assign fallback_poster = block.settings.preset_poster | asset_url -%}
+        {%- assign poster_url = fallback_poster -%}
+        {%- if block.settings.poster_image != blank -%}
+          {%- assign poster_url = block.settings.poster_image | image_url: width: 900 -%}
+        {%- endif -%}
+
+        {%- assign mp4_url = block.settings.video_url -%}
+        {%- if block.settings.shopify_video != blank -%}
+          {%- for src in block.settings.shopify_video.sources -%}
+            {%- if src.format == 'mp4' -%}
+              {%- assign mp4_url = src.url -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        <article
+          class="reel-card"
+          data-reel-idx="{{ forloop.index0 }}"
+          data-poster="{{ poster_url }}"
+          data-video="{{ mp4_url }}"
+          data-tag="{{ block.settings.tag | escape }}"
+          data-creator="{{ block.settings.creator | escape }}"
+          data-caption="{{ block.settings.caption | escape }}"
+          onclick="openVideoLightbox(this)"
+          {{ block.shopify_attributes }}
+        >
+          <div class="reel-media-layer">
+            {%- if mp4_url != blank -%}
+              <video autoplay muted loop playsinline poster="{{ poster_url }}" src="{{ mp4_url }}"></video>
+            {%- else -%}
+              <img class="reel-motion-bg" src="{{ poster_url }}" alt="{{ block.settings.caption | escape }}" loading="lazy" />
+            {%- endif -%}
+          </div>
+          <div class="reel-scrim"></div>
+
+          <div class="reel-top-bar">
+            <span class="reel-tag">
+              <span class="reel-live-dot"></span>
+              {{ block.settings.tag }}
+            </span>
+            <div class="reel-ctrl-group">
+              <button type="button" class="reel-ctrl-btn" onclick="event.stopPropagation(); toggleReelPause(this)" aria-label="Pause or play">❚❚</button>
+              <button type="button" class="reel-ctrl-btn" data-muted="1" onclick="event.stopPropagation(); toggleReelMute(this)" aria-label="Toggle sound">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="reel-center-play" aria-hidden="true">▶</div>
+
+          <div class="reel-bottom">
+            <div class="reel-creator-row">
+              <strong>{{ block.settings.creator }}</strong>
+              <span>{{ block.settings.duration }}</span>
+            </div>
+            <div class="reel-caption">{{ block.settings.caption }}</div>
+            <div class="reel-meta-foot">
+              <span>{{ block.settings.verified_label }}</span>
+              <span>{{ block.settings.views }}</span>
+            </div>
+            <div class="reel-progress-track">
+              <div class="reel-progress-fill"></div>
+            </div>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<!-- SHOPPABLE VIDEO LIGHTBOX MODAL -->
+<div class="video-modal-backdrop" id="video-modal-backdrop" onclick="if(event.target === this) closeVideoLightbox()">
+  <div class="video-modal-shell">
+    <div class="reel-media-layer" id="video-modal-media"></div>
+    <div class="reel-scrim"></div>
+    <button type="button" class="video-modal-close" onclick="closeVideoLightbox()" aria-label="Close video">✕</button>
+
+    <div style="position:relative; z-index:4; padding:0 16px; color:#FFF;">
+      <span class="reel-tag" id="video-modal-tag" style="margin-bottom:8px;">Product Demo</span>
+      <div id="video-modal-caption" style="font-size:15px; font-weight:600; line-height:1.35;"></div>
+    </div>
+
+    {%- if product != blank -%}
+      {%- assign modal_var = product.selected_or_first_available_variant -%}
+      <div class="video-modal-shop-bar">
+        {%- if product.featured_image != blank -%}
+          <img src="{{ product.featured_image | image_url: width: 160 }}" alt="{{ product.title | escape }}" />
+        {%- endif -%}
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ product.title }}</div>
+          <strong style="font-size:15px; color:var(--accent);">{{ modal_var.price | money }}</strong>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="closeVideoLightbox(); vmAddToCart({{ modal_var.id }}, 1)" style="padding:9px 14px; font-size:12.5px; white-space:nowrap;">
+          + Add to Bag
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "PDP Video & UGC Reels",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "See It In Action · Auto-Playing Reels" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Product Demos & Real Customer Reviews" },
+    { "type": "text", "id": "subtext", "label": "Subtitle", "default": "Watch real unboxings, hands-on demos, and 30-day durability tests from verified buyers." }
+  ],
+  "blocks": [
+    {
+      "type": "reel",
+      "name": "Video Reel",
+      "settings": [
+        { "type": "video", "id": "shopify_video", "label": "Shopify-Hosted Video (Recommended)" },
+        { "type": "url", "id": "video_url", "label": "Or Direct .MP4 Video URL" },
+        { "type": "image_picker", "id": "poster_image", "label": "Custom Cover / Poster Image (9:16)" },
+        {
+          "type": "select",
+          "id": "preset_poster",
+          "label": "Default Demo Poster",
+          "default": "reel-demo.jpg",
+          "options": [
+            { "value": "reel-demo.jpg", "label": "Product Demo Studio" },
+            { "value": "reel-ugc.jpg", "label": "UGC Home Creator" },
+            { "value": "reel-review.jpg", "label": "30-Day Field Review" }
+          ]
+        },
+        { "type": "text", "id": "tag", "label": "Top Badge", "default": "Product Demo" },
+        { "type": "text", "id": "creator", "label": "Creator Handle", "default": "@veramarket.studio" },
+        { "type": "text", "id": "duration", "label": "Duration", "default": "0:18" },
+        { "type": "text", "id": "caption", "label": "Caption", "default": "Close-up hands-on walkthrough & setup" },
+        { "type": "text", "id": "verified_label", "label": "Verification Label", "default": "Verified Buyer · ★★★★★" },
+        { "type": "text", "id": "views", "label": "Views", "default": "42.5k views" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Video & UGC Reels",
+      "blocks": [
+        { "type": "reel", "settings": { "tag": "Product Demo", "creator": "@veramarket.studio", "duration": "0:15", "caption": "Close-up walkthrough & key features", "verified_label": "Official Demo", "views": "48.2k views", "preset_poster": "reel-demo.jpg" } },
+        { "type": "reel", "settings": { "tag": "UGC · In Use", "creator": "@alex.everyday", "duration": "0:24", "caption": "5-minute unboxing & first real test at home", "verified_label": "Verified Buyer · ★★★★★", "views": "31.9k views", "preset_poster": "reel-ugc.jpg" } },
+        { "type": "reel", "settings": { "tag": "30-Day Review", "creator": "@marcus.fieldtest", "duration": "0:31", "caption": "After 30 days of daily use — is it worth it?", "verified_label": "Verified Buyer · ★★★★★", "views": "22.4k views", "preset_poster": "reel-review.jpg" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,43 @@
+<section
+  class="cross-sell-section"
+  data-product-recommendations
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent=related"
+>
+  <div class="container">
+    <div class="cross-sell-header">
+      <div>
+        <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+        <h2 class="section-title" style="font-size: 30px;">{{ section.settings.heading }}</h2>
+      </div>
+    </div>
+
+    <div class="cross-sell-grid">
+      {%- if recommendations.performed and recommendations.products_count > 0 -%}
+        {%- for rec_product in recommendations.products -%}
+          {% render 'product-card', product: rec_product %}
+        {%- endfor -%}
+      {%- else -%}
+        {%- assign fallback_col = collections['all'] -%}
+        {%- assign shown = 0 -%}
+        {%- for item in fallback_col.products limit: 8 -%}
+          {%- if item.id != product.id and shown < section.settings.limit -%}
+            {% render 'product-card', product: item %}
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "You Might Also Like",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Recommended For Your Cart" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "YOU MIGHT ALSO LIKE" },
+    { "type": "range", "id": "limit", "label": "Products to recommend", "min": 4, "max": 8, "step": 4, "default": 4 }
+  ],
+  "presets": [{ "name": "You Might Also Like" }]
+}
+{% endschema %}

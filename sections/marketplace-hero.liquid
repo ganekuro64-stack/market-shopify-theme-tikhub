@@ -1,0 +1,116 @@
+<section class="mp-hero">
+  <div class="container mp-hero-grid">
+    <div class="mp-hero-main">
+      {%- if section.settings.hero_image != blank -%}
+        <img src="{{ section.settings.hero_image | image_url: width: 1600 }}" alt="{{ section.settings.heading | escape }}" style="object-position: center right;" />
+      {%- else -%}
+        <img src="{{ 'hero-marketplace.jpg' | asset_url }}" alt="{{ section.settings.heading | escape }}" style="object-position: center right;" />
+      {%- endif -%}
+      <div class="mp-hero-scrim"></div>
+      <div class="mp-hero-content">
+        {%- if section.settings.kicker != blank -%}
+          <span class="mp-hero-kicker">{{ section.settings.kicker }}</span>
+        {%- endif -%}
+        <h1>{{ section.settings.heading }}</h1>
+        <p>{{ section.settings.subtext }}</p>
+        <div style="display:flex; flex-wrap:wrap; gap:12px;">
+          <a class="btn btn-primary" href="{{ section.settings.cta_1_url | default: routes.all_products_collection_url }}">
+            {{ section.settings.cta_1_label }}
+          </a>
+          {%- if section.settings.cta_2_label != blank -%}
+            <a class="btn btn-secondary" style="color:#FFF; border-color:rgba(255,255,255,0.4);" href="{{ section.settings.cta_2_url | default: routes.all_products_collection_url }}">
+              {{ section.settings.cta_2_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    <div class="mp-hero-side">
+      {%- assign p1 = section.settings.promo_1_product -%}
+      <a class="mp-side-card dark-promo" href="{{ p1.url | default: section.settings.promo_1_url | default: routes.all_products_collection_url }}">
+        <div class="mp-side-card-row">
+          <div class="mp-side-card-text">
+            <span class="mp-side-tag">{{ section.settings.promo_1_badge }}</span>
+            <h3>{{ p1.title | default: section.settings.promo_1_title | truncate: 48 }}</h3>
+            <p>{{ section.settings.promo_1_sub }}</p>
+            {%- if p1 != blank -%}
+              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:10px;">
+                <strong style="font-size:21px;">{{ p1.price | money }}</strong>
+                {%- if p1.compare_at_price > p1.price -%}
+                  <s style="opacity:.6; font-size:13px;">{{ p1.compare_at_price | money }}</s>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            <span style="font-size:13px; font-weight:600; color:#93C5FD;">Shop Deal →</span>
+          </div>
+          {%- if p1.featured_image != blank -%}
+            <img class="mp-side-thumb" src="{{ p1.featured_image | image_url: width: 320 }}" alt="{{ p1.title | escape }}" />
+          {%- elsif section.settings.promo_1_image != blank -%}
+            <img class="mp-side-thumb" src="{{ section.settings.promo_1_image | image_url: width: 320 }}" alt="{{ section.settings.promo_1_title | escape }}" />
+          {%- else -%}
+            <img class="mp-side-thumb" src="{{ 'cat-security.jpg' | asset_url }}" alt="Deal of the Day" />
+          {%- endif -%}
+        </div>
+      </a>
+
+      {%- assign p2 = section.settings.promo_2_product -%}
+      <a class="mp-side-card" href="{{ p2.url | default: section.settings.promo_2_url | default: routes.all_products_collection_url }}">
+        <div class="mp-side-card-row">
+          <div class="mp-side-card-text">
+            <span class="mp-side-tag" style="background:var(--bg-accent-soft); color:var(--accent);">{{ section.settings.promo_2_badge }}</span>
+            <h3>{{ p2.title | default: section.settings.promo_2_title | truncate: 48 }}</h3>
+            <p>{{ section.settings.promo_2_sub }}</p>
+            {%- if p2 != blank -%}
+              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:10px;">
+                <strong style="font-size:20px;">{{ p2.price | money }}</strong>
+                {%- if p2.compare_at_price > p2.price -%}
+                  <s style="color:var(--text-subtle); font-size:13px;">{{ p2.compare_at_price | money }}</s>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            <span style="font-size:13px; font-weight:600; color:var(--accent);">View Details →</span>
+          </div>
+          {%- if p2.featured_image != blank -%}
+            <img class="mp-side-thumb" src="{{ p2.featured_image | image_url: width: 320 }}" alt="{{ p2.title | escape }}" />
+          {%- elsif section.settings.promo_2_image != blank -%}
+            <img class="mp-side-thumb" src="{{ section.settings.promo_2_image | image_url: width: 320 }}" alt="{{ section.settings.promo_2_title | escape }}" />
+          {%- else -%}
+            <img class="mp-side-thumb" src="{{ 'cat-home.jpg' | asset_url }}" alt="Bestseller" />
+          {%- endif -%}
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Marketplace Bento Hero",
+  "settings": [
+    { "type": "image_picker", "id": "hero_image", "label": "Main Banner Image (16:9)" },
+    { "type": "text", "id": "kicker", "label": "Top Badge Text", "default": "★ 4.8 Rated · 50,000+ Verified US Orders" },
+    { "type": "text", "id": "heading", "label": "Hero Headline", "default": "Smart Tech, Home & Gear. Built for Everyday Value." },
+    { "type": "textarea", "id": "subtext", "label": "Hero Subtext", "default": "From 4K dash cams and solar security to heavy-duty home organizers and outdoor tactical gear—quality-vetted and shipped fast." },
+    { "type": "text", "id": "cta_1_label", "label": "Primary Button Label", "default": "Shop Today's Deals →" },
+    { "type": "url", "id": "cta_1_url", "label": "Primary Button Link" },
+    { "type": "text", "id": "cta_2_label", "label": "Secondary Button Label", "default": "Browse All Departments" },
+    { "type": "url", "id": "cta_2_url", "label": "Secondary Button Link" },
+    { "type": "header", "content": "Right Promo Card 1 (Dark Navy)" },
+    { "type": "product", "id": "promo_1_product", "label": "Featured Product 1" },
+    { "type": "image_picker", "id": "promo_1_image", "label": "Fallback Image 1" },
+    { "type": "text", "id": "promo_1_badge", "label": "Badge 1", "default": "Deal of the Day" },
+    { "type": "text", "id": "promo_1_title", "label": "Fallback Title 1", "default": "Dual-Lens Solar 4G Security Camera" },
+    { "type": "text", "id": "promo_1_sub", "label": "Subtitle 1", "default": "Wire-free 360° monitoring with instant mobile alerts." },
+    { "type": "url", "id": "promo_1_url", "label": "Fallback Link 1" },
+    { "type": "header", "content": "Right Promo Card 2 (Light)" },
+    { "type": "product", "id": "promo_2_product", "label": "Featured Product 2" },
+    { "type": "image_picker", "id": "promo_2_image", "label": "Fallback Image 2" },
+    { "type": "text", "id": "promo_2_badge", "label": "Badge 2", "default": "Home Bestseller" },
+    { "type": "text", "id": "promo_2_title", "label": "Fallback Title 2", "default": "Heavy-Duty Canister Steam Cleaner" },
+    { "type": "text", "id": "promo_2_sub", "label": "Subtitle 2", "default": "212°F chemical-free deep cleaning for floors & cars." },
+    { "type": "url", "id": "promo_2_url", "label": "Fallback Link 2" }
+  ],
+  "presets": [{ "name": "Marketplace Bento Hero" }]
+}
+{% endschema %}

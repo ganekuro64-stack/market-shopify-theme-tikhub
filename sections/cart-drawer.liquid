@@ -1,0 +1,75 @@
+<div class="drawer-backdrop" id="cart-backdrop" onclick="closeCart()"></div>
+<aside class="cart-drawer" id="cart-drawer" aria-label="Shopping Bag">
+  <div class="cart-header">
+    <h3>Your Bag <span id="drawer-cart-count" style="font-size:18px; color:var(--text-muted);">({{ cart.item_count }})</span></h3>
+    <button type="button" onclick="closeCart()" aria-label="Close bag" style="font-size:22px; padding:4px 8px;">✕</button>
+  </div>
+
+  <div class="cart-shipping-bar">
+    <div id="shipping-msg">Checking shipping threshold...</div>
+    <div class="shipping-track">
+      <div class="shipping-fill" id="shipping-fill" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <div class="cart-body">
+    <div id="cart-items"></div>
+
+    {%- assign upsell_col = collections[settings.cart_upsell_collection] -%}
+    {%- if upsell_col == blank -%}
+      {%- assign upsell_col = collections['all'] -%}
+    {%- endif -%}
+    {%- if upsell_col != blank and upsell_col.products_count > 0 -%}
+      <div class="cart-upsell-box" id="cart-upsell-box">
+        <h4>Frequently Bought Together</h4>
+        <div id="cart-upsell-list">
+          {%- for up in upsell_col.products limit: 3 -%}
+            {%- assign up_var = up.selected_or_first_available_variant -%}
+            {%- if up_var.available -%}
+              <div class="upsell-row">
+                {%- if up.featured_image != blank -%}
+                  <img src="{{ up.featured_image | image_url: width: 160 }}" alt="{{ up.title | escape }}" />
+                {%- endif -%}
+                <div class="upsell-info">
+                  <strong>{{ up.title | truncate: 38 }}</strong>
+                  <span style="color:var(--text-muted);">
+                    {{ up.price | money }}
+                    {%- if up.compare_at_price > up.price -%}
+                      <s style="opacity:.6;">{{ up.compare_at_price | money }}</s>
+                    {%- endif -%}
+                  </span>
+                </div>
+                <button type="button" class="upsell-add" onclick="vmAddToCart({{ up_var.id }}, 1)">+ Add</button>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="cart-footer">
+    <div class="cart-summary-row savings">
+      <span>Discounts</span>
+      <span id="cart-savings">$0.00</span>
+    </div>
+    <div class="cart-summary-row">
+      <span>Shipping</span>
+      <span id="cart-shipping-val">Calculated at checkout</span>
+    </div>
+    <div class="cart-summary-row total">
+      <span>Subtotal</span>
+      <span id="cart-subtotal">{{ cart.total_price | money }}</span>
+    </div>
+    <a class="btn btn-primary btn-full" href="/checkout">
+      Proceed to Checkout →
+    </a>
+  </div>
+</aside>
+
+{% schema %}
+{
+  "name": "Slide-Out Cart Drawer",
+  "settings": []
+}
+{% endschema %}

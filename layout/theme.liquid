@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" data-theme="marketplace">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="canonical" href="{{ canonical_url }}" />
+
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}" />
+  {%- endif -%}
+
+  {%- if settings.head_verification_tags != blank -%}
+    {{ settings.head_verification_tags }}
+  {%- endif -%}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  {{ content_for_header }}
+
+  <style>
+    :root {
+      --accent: {{ settings.color_accent | default: '#0B4F9E' }};
+      --announcement-bg: {{ settings.color_navy | default: '#0B2545' }};
+      --bg: {{ settings.color_bg | default: '#F6F7F9' }};
+      --badge-bg: {{ settings.color_badge | default: '#D92D20' }};
+    }
+  </style>
+
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+  <script>
+    window.VM_THEME = {
+      moneyFormat: {{ shop.money_format | json }},
+      freeShippingThreshold: {{ settings.free_shipping_threshold | default: 75 | times: 100 }},
+      cartAddUrl: {{ routes.cart_add_url | json }},
+      cartChangeUrl: {{ routes.cart_change_url | json }},
+      cartUrl: {{ routes.cart_url | json }},
+      predictiveSearchUrl: {{ routes.predictive_search_url | json }},
+      recommendationsUrl: {{ routes.product_recommendations_url | json }}
+    };
+  </script>
+</head>
+<body class="template-{{ template.name | handle }}">
+  {% section 'announcement-bar' %}
+  {% section 'header' %}
+
+  <main id="MainContent" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'footer' %}
+  {% section 'cart-drawer' %}
+
+  <div class="toast" id="vm-toast" role="status" aria-live="polite"></div>
+
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+</body>
+</html>

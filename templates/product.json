@@ -1,0 +1,60 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "show_delivery_box": true
+      }
+    },
+    "videos": {
+      "type": "pdp-video-reels",
+      "blocks": {
+        "reel_1": {
+          "type": "reel",
+          "settings": {
+            "tag": "Product Demo",
+            "creator": "@veramarket.studio",
+            "duration": "0:15",
+            "caption": "Close-up walkthrough & key features",
+            "verified_label": "Official Demo",
+            "views": "48.2k views",
+            "preset_poster": "reel-demo.jpg"
+          }
+        },
+        "reel_2": {
+          "type": "reel",
+          "settings": {
+            "tag": "UGC · In Use",
+            "creator": "@alex.everyday",
+            "duration": "0:24",
+            "caption": "5-minute unboxing & first real test at home",
+            "verified_label": "Verified Buyer · ★★★★★",
+            "views": "31.9k views",
+            "preset_poster": "reel-ugc.jpg"
+          }
+        },
+        "reel_3": {
+          "type": "reel",
+          "settings": {
+            "tag": "30-Day Review",
+            "creator": "@marcus.fieldtest",
+            "duration": "0:31",
+            "caption": "After 30 days of daily use — is it worth it?",
+            "verified_label": "Verified Buyer · ★★★★★",
+            "views": "22.4k views",
+            "preset_poster": "reel-review.jpg"
+          }
+        }
+      },
+      "block_order": ["reel_1", "reel_2", "reel_3"],
+      "settings": {}
+    },
+    "recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "limit": 4
+      }
+    }
+  },
+  "order": ["main", "videos", "recommendations"]
+}

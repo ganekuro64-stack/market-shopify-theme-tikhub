@@ -1,0 +1,81 @@
+<section style="padding: 8px 0 44px;">
+  <div class="container">
+    <div class="section-header" style="margin-bottom: 20px;">
+      <div>
+        <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+        <h2 class="section-title" style="font-size: 28px;">{{ section.settings.heading }}</h2>
+      </div>
+      <a class="btn btn-secondary" style="padding:9px 18px; font-size:13px;" href="{{ routes.all_products_collection_url }}">
+        View All Departments →
+      </a>
+    </div>
+
+    <div class="dept-tiles-grid">
+      {%- for block in section.blocks -%}
+        {%- assign col = collections[block.settings.collection] -%}
+        <a class="dept-tile" href="{{ col.url | default: block.settings.link | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>
+          <span class="dept-tile-icon">
+            {%- if block.settings.custom_icon != blank -%}
+              <img src="{{ block.settings.custom_icon | image_url: width: 200 }}" alt="{{ block.settings.title | escape }}" />
+            {%- else -%}
+              <img src="{{ block.settings.preset_icon | asset_url }}" alt="{{ block.settings.title | escape }}" />
+            {%- endif -%}
+          </span>
+          <strong>{{ block.settings.title }}</strong>
+          <span>{{ block.settings.subtitle }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shop by Category",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Departments" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by Category" }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Tile",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Home & Appliances" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Cleaners & storage" },
+        { "type": "collection", "id": "collection", "label": "Linked Collection" },
+        { "type": "url", "id": "link", "label": "Fallback URL" },
+        { "type": "image_picker", "id": "custom_icon", "label": "Custom Illustrated Icon (Optional)" },
+        {
+          "type": "select",
+          "id": "preset_icon",
+          "label": "Built-in Walmart-Style Icon",
+          "default": "cat-home.jpg",
+          "options": [
+            { "value": "cat-home.jpg", "label": "Home & Appliances" },
+            { "value": "cat-security.jpg", "label": "Smart Security" },
+            { "value": "cat-auto.jpg", "label": "Auto Electronics" },
+            { "value": "cat-outdoor.jpg", "label": "Outdoor & Tactical" },
+            { "value": "cat-fitness.jpg", "label": "Fitness & Wellness" },
+            { "value": "cat-deals.jpg", "label": "Flash Deals" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop by Category",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Home & Appliances", "subtitle": "Cleaners & storage", "preset_icon": "cat-home.jpg" } },
+        { "type": "category", "settings": { "title": "Smart Security", "subtitle": "Solar cam & doorbell", "preset_icon": "cat-security.jpg" } },
+        { "type": "category", "settings": { "title": "Auto Electronics", "subtitle": "4K dual dash cams", "preset_icon": "cat-auto.jpg" } },
+        { "type": "category", "settings": { "title": "Outdoor & Tactical", "subtitle": "Rugged essentials", "preset_icon": "cat-outdoor.jpg" } },
+        { "type": "category", "settings": { "title": "Fitness & Wellness", "subtitle": "Home trainers", "preset_icon": "cat-fitness.jpg" } },
+        { "type": "category", "settings": { "title": "Flash Deals", "subtitle": "Up to 50% Off", "preset_icon": "cat-deals.jpg" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

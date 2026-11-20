@@ -1,0 +1,164 @@
+{%- paginate collection.products by section.settings.products_per_page -%}
+<section class="collection-page">
+  <div class="container">
+    <div class="breadcrumb" style="margin-bottom: 16px;">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span>/</span>
+      <strong style="color: var(--text);">{{ collection.title }}</strong>
+    </div>
+
+    <div class="collection-topbar">
+      <div>
+        <h1>{{ collection.title }}</h1>
+        <p style="font-size:13.5px; color:var(--text-muted); margin-top:4px;">
+          Showing {{ collection.products_count }} verified products
+        </p>
+      </div>
+
+      <div class="collection-sort-wrap">
+        <button type="button" class="mobile-filter-trigger" onclick="openMobileFilters()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+          Filters
+        </button>
+
+        <form method="get" style="display:flex; align-items:center; gap:8px;">
+          <label for="col-sort-select">Sort by:</label>
+          <select id="col-sort-select" name="sort_by" class="collection-sort-select" onchange="this.form.submit()">
+            {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+            {%- for option in collection.sort_options -%}
+              <option value="{{ option.value }}"{% if option.value == sort_by %} selected="selected"{% endif %}>
+                {{ option.name }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </form>
+      </div>
+    </div>
+
+    {%- assign has_active_filters = false -%}
+    {%- for filter in collection.filters -%}
+      {%- if filter.active_values.size > 0 or filter.min_value.value != nil or filter.max_value.value != nil -%}
+        {%- assign has_active_filters = true -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_active_filters -%}
+      <div class="active-filters-bar">
+        {%- for filter in collection.filters -%}
+          {%- for val in filter.active_values -%}
+            <a class="active-filter-chip" href="{{ val.url_to_remove }}">
+              {{ val.label }} <span>✕</span>
+            </a>
+          {%- endfor -%}
+        {%- endfor -%}
+        <a class="clear-filters-btn" href="{{ collection.url }}">Clear all</a>
+      </div>
+    {%- endif -%}
+
+    <div class="drawer-backdrop" id="filter-backdrop" onclick="closeMobileFilters()"></div>
+
+    <div class="collection-layout">
+      <aside class="collection-sidebar" id="collection-sidebar" aria-label="Product Filters">
+        <div class="sidebar-head">
+          <h3>Filter Products</h3>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <a href="{{ collection.url }}" style="font-size:12px; color:var(--accent); font-weight:600;">Reset</a>
+            <button type="button" class="sidebar-mobile-close" onclick="closeMobileFilters()" aria-label="Close filters">✕</button>
+          </div>
+        </div>
+
+        <form id="vm-filter-form" method="get">
+          {%- if collection.filters.size > 0 -%}
+            {%- for filter in collection.filters -%}
+              <div class="filter-group">
+                <div class="filter-group-title">{{ filter.label }}</div>
+
+                {%- case filter.type -%}
+                  {%- when 'boolean' or 'list' -%}
+                    {%- for value in filter.values -%}
+                      <div class="filter-option">
+                        <label>
+                          <input
+                            type="checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            {% if value.active %}checked{% endif %}
+                            onchange="this.form.submit()"
+                          />
+                          {{ value.label }}
+                        </label>
+                        <span class="filter-count">{{ value.count }}</span>
+                      </div>
+                    {%- endfor -%}
+
+                  {%- when 'price_range' -%}
+                    <div class="vm-price-inputs">
+                      <input
+                        type="number"
+                        name="{{ filter.min_value.param_name }}"
+                        value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                        placeholder="Min ($)"
+                        min="0"
+                      />
+                      <input
+                        type="number"
+                        name="{{ filter.max_value.param_name }}"
+                        value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                        placeholder="Max ($)"
+                        min="0"
+                      />
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-full" style="margin-top:10px; padding:7px 12px; font-size:12.5px;">
+                      Apply Price
+                    </button>
+                {%- endcase -%}
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <div class="filter-group">
+              <div class="filter-group-title">Departments</div>
+              {%- for col in collections limit: 10 -%}
+                <div class="filter-option">
+                  <a href="{{ col.url }}" style="flex:1;">{{ col.title }}</a>
+                  <span class="filter-count">{{ col.products_count }}</span>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </form>
+      </aside>
+
+      <div>
+        <div class="collection-grid">
+          {%- if collection.products.size > 0 -%}
+            {%- for product in collection.products -%}
+              {% render 'product-card', product: product %}
+            {%- endfor -%}
+          {%- else -%}
+            <div class="empty-collection">
+              <h3 style="margin-bottom:8px;">No products match these filters</h3>
+              <p style="color:var(--text-muted); margin-bottom:18px; font-size:14px;">Try clearing a filter to browse all products.</p>
+              <a class="btn btn-primary" href="{{ collection.url }}">Reset All Filters</a>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="vm-pagination" aria-label="Pagination">
+            {{ paginate | default_pagination }}
+          </nav>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection with Sidebar",
+  "settings": [
+    { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 12, "max": 36, "step": 6, "default": 18 }
+  ]
+}
+{% endschema %}
