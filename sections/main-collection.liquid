@@ -136,9 +136,15 @@
             {%- endfor -%}
           {%- else -%}
             <div class="empty-collection">
-              <h3 style="margin-bottom:8px;">No products match these filters</h3>
-              <p style="color:var(--text-muted); margin-bottom:18px; font-size:14px;">Try clearing a filter to browse all products.</p>
-              <a class="btn btn-primary" href="{{ collection.url }}">Reset All Filters</a>
+              {%- if has_active_filters -%}
+                <h3 style="margin-bottom:8px;">No products match these filters</h3>
+                <p style="color:var(--text-muted); margin-bottom:18px; font-size:14px;">Try clearing a filter to browse all products.</p>
+                <a class="btn btn-primary" href="{{ collection.url }}">Reset All Filters</a>
+              {%- else -%}
+                <h3 style="margin-bottom:8px;">New products arriving soon</h3>
+                <p style="color:var(--text-muted); margin-bottom:18px; font-size:14px;">We are currently stocking this department. Check back shortly or explore our storefront.</p>
+                <a class="btn btn-primary" href="{{ routes.root_url }}">Back to Storefront</a>
+              {%- endif -%}
             </div>
           {%- endif -%}
         </div>

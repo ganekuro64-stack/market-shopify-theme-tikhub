@@ -1,9 +1,38 @@
 <section class="collection-page">
-  <div class="container" style="max-width: 820px;">
-    <h1 style="margin-bottom: 18px;">{{ page.title }}</h1>
-    <div class="rte" style="font-size:15.5px; color:var(--text-muted); line-height:1.75;">
-      {{ page.content }}
-    </div>
+  <div class="container" style="max-width: 780px;">
+    <h1 style="margin-bottom: 16px;">{{ page.title }}</h1>
+    {%- if page.content != blank -%}
+      <div class="rte" style="font-size:15.5px; color:var(--text-muted); line-height:1.75; margin-bottom:28px;">
+        {{ page.content }}
+      </div>
+    {%- endif -%}
+
+    {%- if page.handle == 'contact' -%}
+      <div class="pdp-desc-card" style="padding: 28px;">
+        {%- form 'contact' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="delivery-estimate-box" style="margin-bottom:18px;">
+              <strong>Message sent!</strong> Our support team will reply within 24 hours.
+            </div>
+          {%- endif -%}
+          <div style="display:grid; gap:14px;">
+            <div>
+              <label class="vm-variant-label" for="ContactName">Your Name</label>
+              <input id="ContactName" type="text" name="contact[name]" required style="width:100%; padding:11px 14px; border:1px solid var(--border-strong); border-radius:8px; font-size:14px;" />
+            </div>
+            <div>
+              <label class="vm-variant-label" for="ContactEmail">Email Address</label>
+              <input id="ContactEmail" type="email" name="contact[email]" required style="width:100%; padding:11px 14px; border:1px solid var(--border-strong); border-radius:8px; font-size:14px;" />
+            </div>
+            <div>
+              <label class="vm-variant-label" for="ContactBody">Message</label>
+              <textarea id="ContactBody" name="contact[body]" rows="5" required style="width:100%; padding:11px 14px; border:1px solid var(--border-strong); border-radius:8px; font-size:14px; font-family:inherit;"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="justify-self:start;">Send Message →</button>
+          </div>
+        {%- endform -%}
+      </div>
+    {%- endif -%}
   </div>
 </section>
 
