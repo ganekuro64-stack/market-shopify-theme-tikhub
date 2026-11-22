@@ -3,7 +3,8 @@
     "main": {
       "type": "main-product",
       "settings": {
-        "show_delivery_box": true
+        "show_delivery_box": true,
+        "delivery_text": "Order within 3 hrs for fast tracked express delivery."
       }
     },
     "videos": {

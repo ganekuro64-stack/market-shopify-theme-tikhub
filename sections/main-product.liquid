@@ -85,7 +85,9 @@
           </div>
 
           <!-- REAL SHOPIFY VARIANT SELECTOR -->
-          {%- unless product.has_only_default_variant -%}
+          {%- if product.has_only_default_variant -%}
+            <input type="hidden" id="vm-variant-select" value="{{ current_variant.id }}" />
+          {%- else -%}
             <div class="vm-variant-group">
               <label class="vm-variant-label" for="vm-variant-select">Select Option</label>
               <select
@@ -108,9 +110,7 @@
                 {%- endfor -%}
               </select>
             </div>
-          {%- else -%}
-            <input type="hidden" id="vm-variant-select" value="{{ current_variant.id }}" />
-          {%- endunless -%}
+          {%- endif -%}
 
           <!-- QUANTITY BUNDLE SELECTOR -->
           <div class="tier-label">
